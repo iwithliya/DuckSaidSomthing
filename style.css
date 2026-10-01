@@ -1,0 +1,238 @@
+/* ==========================================================
+   Base
+   ========================================================== */
+:root {
+  --bg: #05020a;
+  --lavender: #d9c8f5;
+  --mono: "Courier New", ui-monospace, Menlo, Consolas, monospace;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--bg);
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  font-family: var(--mono);
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  background: radial-gradient(120% 90% at 50% 45%, #0e0618 0%, #07030d 55%, #030106 100%);
+}
+
+/* ==========================================================
+   Scene (canvas mist + stars)
+   ========================================================== */
+.scene {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  animation: scene-in 1.8s ease both;
+}
+
+/* Darkening veil: the scene is visible (and alive) behind the loader,
+   then brightens slowly once loading is finished. */
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #030108;
+  opacity: 30;
+  transition: opacity 3.6s cubic-bezier(0.4, 0, 0.2, 1) 0.15s;
+}
+
+.is-ready .scene::after { opacity: 0; }
+
+@keyframes scene-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 48%, rgba(0, 0, 0, 0) 35%, rgba(2, 0, 6, 0.62) 100%);
+}
+
+/* ==========================================================
+   Stage + Minecraft-inspired stone button (original design)
+   ========================================================== */
+.stage-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  pointer-events: none;
+}
+
+.stage {
+  will-change: transform;
+  max-width: 100%;
+}
+
+.cta {
+  --stone: #5a5750;
+  --stone-light: #8d897d;
+  --stone-dark: #2a2823;
+  --outline: #0a0710;
+
+  position: relative;
+  display: block;
+  min-width: clamp(210px, 60vw, 320px);
+  max-width: calc(100vw - 32px);
+  height: clamp(56px, 14vw, 68px);
+  padding: 0 clamp(24px, 7vw, 44px);
+  margin: 0;
+  font: 700 clamp(18px, 4.8vw, 24px) / 1 var(--mono);
+  letter-spacing: 0.04em;
+  color: #ece6f7;
+  text-shadow: 2px 2px 0 #1b1a17;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 3px solid var(--outline);
+  border-radius: 0;
+  background-color: var(--stone);
+  /* tiny pixel speckle texture, inline SVG (no extra request) */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Cg fill='white' fill-opacity='.07'%3E%3Crect x='1' y='2' width='2' height='2'/%3E%3Crect x='7' y='1' width='2' height='2'/%3E%3Crect x='12' y='4' width='2' height='2'/%3E%3Crect x='4' y='9' width='2' height='2'/%3E%3Crect x='10' y='11' width='2' height='2'/%3E%3Crect x='14' y='13' width='2' height='2'/%3E%3Crect x='2' y='14' width='2' height='2'/%3E%3C/g%3E%3Cg fill='black' fill-opacity='.12'%3E%3Crect x='5' y='4' width='2' height='2'/%3E%3Crect x='9' y='6' width='2' height='2'/%3E%3Crect x='13' y='8' width='2' height='2'/%3E%3Crect x='2' y='7' width='2' height='2'/%3E%3Crect x='7' y='12' width='2' height='2'/%3E%3Crect x='11' y='2' width='2' height='2'/%3E%3Crect x='4' y='13' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 64px 64px;
+  image-rendering: pixelated;
+  box-shadow:
+    inset 4px 4px 0 var(--stone-light),
+    inset -4px -4px 0 var(--stone-dark),
+    0 8px 0 -1px rgba(0, 0, 0, 0.4),
+    0 22px 44px rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  transition:
+    opacity 1.8s ease 1.2s,
+    visibility 0s linear 1.2s,
+    transform 0.14s ease,
+    filter 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.is-ready .cta {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hover (mouse) */
+@media (hover: hover) {
+  .is-ready .cta:hover {
+    color: #ffffb0;
+    filter: brightness(1.14);
+    transform: translateY(-2px);
+    box-shadow:
+      inset 4px 4px 0 var(--stone-light),
+      inset -4px -4px 0 var(--stone-dark),
+      0 10px 0 -1px rgba(0, 0, 0, 0.4),
+      0 0 0 3px rgba(190, 140, 255, 0.35),
+      0 26px 54px rgba(110, 50, 190, 0.35);
+  }
+}
+
+/* Press (mouse down / finger down) */
+.is-ready .cta:active {
+  color: #ffffb0;
+  filter: brightness(1.1);
+  transform: translateY(2px);
+  box-shadow:
+    inset 4px 4px 0 var(--stone-dark),
+    inset -4px -4px 0 var(--stone-light),
+    0 4px 0 -1px rgba(0, 0, 0, 0.4),
+    0 14px 30px rgba(0, 0, 0, 0.6);
+}
+
+.cta:focus-visible {
+  outline: 3px solid #d9c2ff;
+  outline-offset: 5px;
+}
+
+/* ==========================================================
+   Loader (duck + waiting text)
+   ========================================================== */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding:
+    16px
+    16px
+    max(18px, env(safe-area-inset-bottom))
+    max(18px, env(safe-area-inset-left));
+  background: transparent;
+  transition: opacity 1.4s ease, visibility 0s linear 1.4s;
+}
+
+.loader.is-done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.duck-wrap {
+  position: relative;
+  width: clamp(84px, 16vw, 132px);
+}
+
+.duck {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: duck-bob 2.6s ease-in-out infinite;
+}
+
+.loader__text {
+  position: absolute;
+  left: 100%;
+  bottom: 58%;
+  margin: 0 0 0 6px;
+  font: 700 clamp(17px, 4.4vw, 22px) / 1 var(--mono);
+  letter-spacing: 0.03em;
+  color: var(--lavender);
+  text-shadow: 2px 2px 0 #12081f;
+  white-space: nowrap;
+}
+
+@keyframes duck-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ==========================================================
+   Reduced motion
+   ========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .duck { animation: none; }
+  .scene { animation: none; }
+  .scene::after { transition-duration: 0.01s; transition-delay: 0s; }
+  .cta { transition-duration: 0.01s; transition-delay: 0s; }
+  .loader { transition-duration: 0.01s; }
+}

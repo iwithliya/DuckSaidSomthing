@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#05020a">
+  <title>Click on this</title>
+  <link rel="icon" href="assets/duck.png" type="image/png">
+  <link rel="preload" as="image" href="assets/duck.png">
+  <link rel="stylesheet" href="style.css">
+  <noscript><style>.loader{display:none}</style></noscript>
+</head>
+<body class="is-loading">
+
+  <!-- Atmosphere: mist + stars are drawn on this canvas by script.js -->
+  <div class="scene" aria-hidden="true">
+    <canvas id="scene-canvas"></canvas>
+    <div class="vignette"></div>
+  </div>
+
+  <!-- Main button (hidden until loading is finished) -->
+  <main class="stage-wrap">
+    <div class="stage" id="stage">
+      <button class="cta" id="cta" type="button">Click on this</button>
+    </div>
+  </main>
+
+  <!-- Loading sequence: removed from the DOM when loading is finished -->
+  <div class="loader" id="loader" role="status" aria-label="Loading">
+    <div class="duck-wrap">
+      <img class="duck" id="duck" src="assets/duck.png" width="360" height="310"
+           alt="A small white duck in a brown hat, sitting and waiting" decoding="async">
+      <p class="loader__text" id="loader-text" aria-hidden="true">Damn…</p>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
